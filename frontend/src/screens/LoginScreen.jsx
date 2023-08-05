@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Form, Button, Row, Col } from 'react-bootstrap';
 import { useDispatch, useSelector } from "react-redux";
@@ -18,6 +18,8 @@ const LoginScreen = () => {
 
     const [login, { isLoading }] = useLoginMutation();
 
+    const { userInfo } = useSelector((state) => state.auth);
+
     const { search } = useLocation();
     const sp = new URLSearchParams(search);
     const redirect = sp.get('redirect') || '/';
@@ -34,7 +36,7 @@ const LoginScreen = () => {
             const res = await login({ email, password }).unwrap(); //login returns a promise, so do unwrap to resolve it 
             dispatch(setCredentials({ ...res }));
             navigate(redirect);
-        } catch (error) {
+        } catch (err) {
             toast.error(err?.data?.message || err.error); //making it work even if it is undefined
         }
     }
